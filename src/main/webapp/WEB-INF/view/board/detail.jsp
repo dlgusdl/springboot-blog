@@ -2,6 +2,7 @@
 
 <%@ include file="../layout/header.jsp" %>
 
+<input type="hidden" id="boardId" value="${boardDto.id}" />
 
 <div class="container my-3">
     <c:if test="${boardDto.userId == principal.id}">
@@ -31,11 +32,65 @@
         <div>${boardDto.content}</div>
     </div>
     <hr/>
-            <i id="heart" class="fa-regular fa-heart fa-lg"></i>
-            <i id="heart2" class="fa-solid fa-heart my-xl my-cursor">
-            
 
-            <div class="card mt-3">
+    <c:choose>
+        <c:when test="${loveDto == null}">
+            <i id="heart" class="fa-regular fa-heart fa-lg" value="${loveDto.id}" onclick="loveOrCancel()"></i>
+        </c:when>
+        <c:otherwise>
+            <i id="heart" class="fa-solid fa-heart fa-lg" value="${loveDto.id}" onclick="loveOrCancel()"></i>
+        </c:otherwise>
+    </c:choose>
+
+    <script>
+
+
+        function loveOrCancel(){
+            let boardId = $("#boardId").val();
+            let id = $("#heart").attr("value");
+            console.log(id);
+
+            if (id == "") {
+                // 좋아요 통신 요청 (POST)
+                let data = {
+                    boardId: boardId
+                }
+
+                $.ajax({
+                    type: "post",
+                    url: "/love",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                }).done((res) => { // 20X 일때
+                    alert(res.msg);
+                    $("#heart").attr("value", res.data);
+                    $("#heart").addClass("fa-solid");
+                    $("#heart").removeClass("fa-regular");
+                }).fail((err) => { // 40X, 50X 일때
+                    alert(err.responseJSON.msg);
+                });
+            } else {
+                // 좋아요 취소 통신 요청 (DELETE)
+                $.ajax({
+                    type: "delete",
+                    url: "/love/"+id,
+                    dataType: "json"
+                }).done((res) => { // 20X 일때
+                    alert(res.msg);
+                    $("#heart").attr("value", "");
+                    $("#heart").removeClass("fa-solid");
+                    $("#heart").addClass("fa-regular");
+                }).fail((err) => { // 40X, 50X 일때
+                    alert(err.responseJSON.msg);
+                });
+            }
+        }
+
+
+    </script>
+
+    <div class="card mt-3">
         <form action="/reply" method="post">
             <input type="hidden" name="boardId" value="${boardDto.id}">
             <div class="card-body">
@@ -64,15 +119,7 @@
         </ul>
     </div>
 </div>
-    <c:choose>
-        <c:when test="${loveDto == null}">
-            <i id="heart" class="fa-regular fa-heart fa-lg" value="no"></i>
-        </c:when>
-        <c:otherwise>
-            <i id="heart-${loveDto.id}" class="fa-solid fa-heart fa-lg" value="ok"></i>
-        </c:otherwise>
-    </c:choose>
-        
+
 <script>
     function deleteByReplyId(id){
         $.ajax({
@@ -89,6 +136,7 @@
         // $("#reply-"+id).remove();
         // location.reload();
     }
+
     function deleteById(id) {
         $.ajax({
             type: "delete",

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-//import org.mybatis.boot.test.autoconfigure.MybatisTest;
+//import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardMainRespDto;
 
 // F - DS - C - S - R - MyBatis - DB
-
 @MybatisTest
 public class BoardRepositoryTest {
 
