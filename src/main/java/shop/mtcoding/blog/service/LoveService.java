@@ -1,6 +1,6 @@
 package shop.mtcoding.blog.service;
 
-import javax.websocket.Session;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import shop.mtcoding.blog.model.User;
 @Service
 public class LoveService {
     @Autowired
-    private Session session;
+    private HttpSession session;
 
     @Autowired
     private LoveService loveService;
@@ -42,6 +42,7 @@ public class LoveService {
         return new ResponseEntity<>(new ResponseDto<>(1, "좋아요취소 성공", null), HttpStatus.OK);
     }
 
+    // 커밋
     @Transactional
     public void 좋아요취소(int id, int userId) {
         Love lovePS = loveRepository.findById(id);
